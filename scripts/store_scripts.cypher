@@ -1,4 +1,8 @@
 // Define some data
+CREATE CONSTRAINT IF NOT EXISTS unique_order_id FOR (n:Order) REQUIRE n.id IS UNIQUE;
+CREATE CONSTRAINT IF NOT EXISTS unique_item_id FOR (n:Item) REQUIRE n.id IS UNIQUE;
+CREATE CONSTRAINT IF NOT EXISTS  unique_customer_id FOR (n:Customer) REQUIRE n.id IS UNIQUE;
+
 CREATE (o:Order {id:1})
 CREATE (c:Customer {id:1, name: "Mykola"})
 CREATE (i1:Item {id:1, price: 2.5, likes: 5})
