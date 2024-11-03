@@ -1,21 +1,27 @@
 // Define some data
-CREATE CONSTRAINT IF NOT EXISTS unique_order_id FOR (n:Order) REQUIRE n.id IS UNIQUE;
-CREATE CONSTRAINT IF NOT EXISTS unique_item_id FOR (n:Item) REQUIRE n.id IS UNIQUE;
-CREATE CONSTRAINT IF NOT EXISTS  unique_customer_id FOR (n:Customer) REQUIRE n.id IS UNIQUE;
+//picnic-slalom-joel-passive-numeric-4056
+CREATE CONSTRAINT unique_order_id    IF NOT EXISTS FOR (n:Order)    REQUIRE n.id IS UNIQUE;
+CREATE CONSTRAINT unique_item_id     IF NOT EXISTS FOR (n:Item)     REQUIRE n.id IS UNIQUE;
+CREATE CONSTRAINT unique_customer_id IF NOT EXISTS FOR (n:Customer) REQUIRE n.id IS UNIQUE;
 
-CREATE (o:Order {id:1})
-CREATE (c:Customer {id:1, name: "Mykola"})
-CREATE (i1:Item {id:1, price: 2.5, likes: 5})
-CREATE (i2:Item {id:2, price: 3, likes: 10})
-CREATE (i3:Item {id:3, price: 1.5, likes: 12})
-CREATE (i3:Item {id:4, price: 10, likes: 7})
-CREATE (c)-[:PLACED]->(o)
-CREATE (o)-[:CONTAINS]->(i1)
-CREATE (o)-[:CONTAINS]->(i3)
-CREATE (c)-[:VIEWED]->(i1)
-CREATE (c)-[:VIEWED]->(i2)
-CREATE (c)-[:VIEWED]->(i3)
-CREATE (c)-[:VIEWED]->(i4)
+MERGE (o1:Order {id:"1"})
+MERGE (o2:Order {id:"2"})
+MERGE (c:Customer {id:"1", name: "Mykola"})
+MERGE (i1:Item {id:"1", name:"1", price: 2.5, likes: 5})
+MERGE (i2:Item {id:"2", name:"2", price: 3, likes: 10})
+MERGE (i3:Item {id:"3", name:"3", price: 1.5, likes: 12})
+MERGE (i4:Item {id:"4", name:"4", price: 10, likes: 7})
+MERGE (c)-[:PLACED]->(o1)
+MERGE (c)-[:PLACED]->(o2)
+MERGE (o1)-[:CONTAINS]->(i1)
+MERGE (o1)-[:CONTAINS]->(i3)
+MERGE (o2)-[:CONTAINS]->(i1)
+MERGE (o2)-[:CONTAINS]->(i2)
+MERGE (o2)-[:CONTAINS]->(i3)
+MERGE (c)-[:VIEWED]->(i1)
+MERGE (c)-[:VIEWED]->(i2)
+MERGE (c)-[:VIEWED]->(i3)
+MERGE (c)-[:VIEWED]->(i4)
 
 // set param
 :param {orderId: 1}
@@ -77,7 +83,7 @@ RETURN c, r, i
 
 // Знайти для певного Customer(а) товари, які він переглядав, але не купив
 MATCH (c:Customer)-[v:VIEWED]->(i:Item)
-WHERE c.id = $itemId AND NOT EXISTS {
+WHERE c.id = $customerId AND NOT EXISTS {
   MATCH (c)-[:PLACED]->(o)-[:CONTAINS]->(i)
 }
 RETURN c, v, i
